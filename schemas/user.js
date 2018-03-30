@@ -8,7 +8,7 @@ var Userschema= new mongoose.Schema({
 		unique:true,
 		type:String
 	},
-	password::String,
+	password:String,
 	meta:{
 		createAt:{        //创建时间
 			type:Date,
@@ -41,6 +41,18 @@ Userschema.pre('save',function(next){   //更新插入数据
 	 })
 
 })
+
+Userschema.methods={
+	comparePassword:function(_password,cb){
+		bcrypt.compare(_password,this.password,function(err,isMatch){
+			if(err) return cb(err)
+			
+			cb(null,isMatch)
+			
+		})
+	}
+}
+
 
 Userschema.statics={
 	fetch:function(cb){  //取出数据库中的数据
