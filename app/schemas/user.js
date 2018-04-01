@@ -1,5 +1,5 @@
 var mongoose= require('mongoose');
-var bcrypt=require('bcrypt');  //密码加密加盐
+var bcrypt = require('bcryptjs'); //密码加密加盐
 var SALT_WORK_FACTOR=10;
 
 var Userschema= new mongoose.Schema({
