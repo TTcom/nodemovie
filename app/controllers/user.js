@@ -21,8 +21,6 @@ exports.showSignin=function(req,res){
 	
 }
 
-
-
 exports.signup=function(req,res){
 	var _user=req.body.user;
 	
@@ -31,7 +29,7 @@ exports.signup=function(req,res){
 		if(err){
 			console.log(err)
 		}
-		if(user.name){
+		if(user){
 			console.log('以注册过')
 			return res.redirect('/signin')
 			
@@ -92,6 +90,7 @@ exports.logout=function(req,res){
 }
 //userlist
 exports.list=function(req,res){
+
 	User.fetch(function(err,users){
 		if(err){
 			console.log(err)
@@ -101,6 +100,27 @@ exports.list=function(req,res){
 		users:users
 	  })
 	})
-	
-	
+
+}
+// midware for user
+exports.signinRequired=function(req,res,next){
+ 
+    var user=req.session.user;
+    if(!user){
+    	  return res.redirect('/signin');
+    	
+    }
+      next();
+
+}
+
+exports.adminRequired=function(req,res,next){
+ 
+    var user=req.session.user;
+    if(user.role<=10){
+     	return res.redirect('/signin');
+    	
+    }
+      next();
+
 }

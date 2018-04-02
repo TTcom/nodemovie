@@ -1,19 +1,27 @@
 
 
 var Movie=require('../models/movie')
+var Comment=require('../models/comment')
 var _=require('underscore')
 
 //detail page
-exports.detail=function(req,res){      //更新电影
+exports.detail=function(req,res){      //更新电影	
 	
 	var id= req.params.id                        
 	Movie.findById(id,function(err,movie){        //根据id获取电影数据
-	res.render('detail',{
-		title:"movie "+movie.title,
-		movie:movie
-		
-	})
-
+		Comment
+		  .find({movie:id})    //查找与movieid匹配的movie的对象，先找到与movieid相同的Comment
+		  .populate('from','name')   //在user中查找与form相同的name，然后在筛选与from相同的userid fromid就是指userid
+		  .populate('reply.from','name')
+		  .populate('reply.to','name')
+		  .exec(function(err,comments){     //将符合条件的comments插入
+			res.render('detail',{
+				title:"movie 详情页"+movie.title,
+				movie:movie,
+				comments:comments
+				
+			})
+       })
 	})
 	
 }

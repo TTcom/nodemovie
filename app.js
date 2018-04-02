@@ -11,7 +11,7 @@ var cookieParser = require('cookie-parser')
 var session = require('express-session')
 var mongoose=require('mongoose')
 var mongoStore=require('connect-mongo')(session)
-var logger = require('morgan');
+var logger = require('morgan');   //express4.0后logger脱离express由 Morgan替代它是一个node.js关于http请求的日志中间件
 var dburl='mongodb://127.0.0.1:27017/test';
 mongoose.connect(dburl);
 app.use(bodyParser.urlencoded({extended: true}));
@@ -32,7 +32,7 @@ app.use(session({
 
 }))
 
-if('development' === app.get('env')){
+if('development' === app.get('env')){     //Morgan是一个node.js关于http请求的日志中间件app.get(‘env’)  ：当前用户环境变量中NODE_ENV值；
 	app.set('showStackError',true);
 	app.use(logger(':method:url:status'))
 	app.locals.pretty=true;

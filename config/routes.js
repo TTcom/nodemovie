@@ -1,6 +1,7 @@
 var Index=require('../app/controllers/index')
 var User=require('../app/controllers/user')
 var Movie=require('../app/controllers/movie')
+var Comment=require('../app/controllers/comment')
 module.exports=function(app){
 	
 
@@ -27,20 +28,23 @@ app.get('/signup',User.showSignup)
 app.get('/logout',User.logout);
 
 //userlist
-app.get('/admin/userlist',User.list)
+app.get('/admin/user/list',User.signinRequired,User.adminRequired,User.list)
 
 
 app.get('/movie/:id',Movie.detail)
-app.get('/admin/movie',Movie.new)
+app.get('/admin/movie/new',User.signinRequired,User.adminRequired,Movie.new)
 
 // admin update movie
-app.get('/admin/update/:id',Movie.update)
+app.get('/admin/movie/update/:id',User.signinRequired,User.adminRequired,Movie.update)
    // admin post movie
-app.post('/admin/movie/new',Movie.save);
+app.post('/admin/movie',User.signinRequired,User.adminRequired,Movie.save);
 
-app.get('/admin/list',Movie.list)
+app.get('/admin/movie/list',User.signinRequired,User.adminRequired,Movie.list)
 //list delete
-app.delete('/admin/list',Movie.del)
+app.delete('/admin/movie/list',User.signinRequired,User.adminRequired,Movie.del)
+//comment
+app.post('/user/comment',User.signinRequired,Comment.save);
+
 
 }
 

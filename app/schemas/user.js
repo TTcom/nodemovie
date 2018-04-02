@@ -9,6 +9,14 @@ var Userschema= new mongoose.Schema({
 		type:String
 	},
 	password:String,
+	// user
+	// admin
+	//super admin  //0 :nomaluser //1:verified user //2:professonal user
+	 // >10: adimn //>50 :superadmin
+	role:{
+		type:Number,
+	    default:0
+	},
 	meta:{
 		createAt:{        //创建时间
 			type:Date,
