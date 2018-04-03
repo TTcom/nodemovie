@@ -1,31 +1,13 @@
 var mongoose= require('mongoose');
 var Schema=mongoose.Schema;
-var ObjectId=Schema.Types.ObjectId  //对象和id ObjectId是mongodb中的一种主键类型，会自动分配id
+var ObjectId=Schema.Types.ObjectId
 
-var Commentschema= new Schema({
-	
-	movie:{
+var Categeryschema= new Schema({
+	name:String,
+	movies:[{
 		type:ObjectId,
-		ref:"Movie"      //指向Movie
-	},
-   from:{
-		type:ObjectId,
-		ref:"User"      //User 	
-   },
-   reply:[
-      {
-		   from:{
-				type:ObjectId,
-				ref:"User"      //User 	
-		   },
-		   to:{
-				type:ObjectId,
-				ref:"User"      //User	
-		   },
-      	  content:String,
-      }
-   ],
-   content:String,
+		ref:"Movie"
+	}],
 	meta:{
 		createAt:{        //创建时间
 			type:Date,
@@ -39,7 +21,7 @@ var Commentschema= new Schema({
 	
 })
 
-Commentschema.pre('save',function(next){   //更新插入数据
+Categeryschema.pre('save',function(next){   //更新插入数据
 	
 	if(this.isNew){
 		this.meta.createAt = this.meta.updateAt=Date.now()
@@ -50,7 +32,7 @@ Commentschema.pre('save',function(next){   //更新插入数据
 	next()
 })
 
-Commentschema.statics={
+Categeryschema.statics={
 	fetch:function(cb){  //取出数据库中的数据
 		return this
 		   .find({})
@@ -64,4 +46,4 @@ Commentschema.statics={
 		.exec(cb)
 	}
 }
-module.exports=Commentschema
+module.exports=Categeryschema

@@ -1,7 +1,8 @@
 var Index=require('../app/controllers/index')
 var User=require('../app/controllers/user')
-var Movie=require('../app/controllers/movie')
 var Comment=require('../app/controllers/comment')
+var Movie=require('../app/controllers/movie')
+var Categery=require('../app/controllers/categery')
 module.exports=function(app){
 	
 
@@ -32,7 +33,7 @@ app.get('/admin/user/list',User.signinRequired,User.adminRequired,User.list)
 
 
 app.get('/movie/:id',Movie.detail)
-app.get('/admin/movie/new',User.signinRequired,User.adminRequired,Movie.new)
+app.get('/admin/movie/new',User.signinRequired,User.adminRequired,Movie.new)   //电影录入也
 
 // admin update movie
 app.get('/admin/movie/update/:id',User.signinRequired,User.adminRequired,Movie.update)
@@ -45,6 +46,11 @@ app.delete('/admin/movie/list',User.signinRequired,User.adminRequired,Movie.del)
 //comment
 app.post('/user/comment',User.signinRequired,Comment.save);
 
+app.get('/admin/categery/new',User.signinRequired,User.adminRequired,Categery.new)//电影分类录入也
+
+app.post('/admin/categery',User.signinRequired,User.adminRequired,Categery.save);
+
+app.get('/admin/categery/list',User.signinRequired,User.adminRequired,Categery.list)
 
 }
 

@@ -1,7 +1,7 @@
 var  mongoose=require('mongoose')
 
-var  movieschema=require('../schemas/movie')
+var  Movieschema=require('../schemas/movie')
 
-var movie=mongoose.model('movie',movieschema)
+var Movie=mongoose.model('Movie',Movieschema)
 
-module.exports = movie
+module.exports = Movie

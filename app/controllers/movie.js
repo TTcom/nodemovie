@@ -2,7 +2,7 @@
 
 var Movie=require('../models/movie')
 var Comment=require('../models/comment')
-var _=require('underscore')
+var _=require('underscore')   //Underscore 是一个 JavaScript 工具库，它提供了一整套函数式编程的实用功能
 
 //detail page
 exports.detail=function(req,res){      //更新电影	
@@ -11,7 +11,7 @@ exports.detail=function(req,res){      //更新电影
 	Movie.findById(id,function(err,movie){        //根据id获取电影数据
 		Comment
 		  .find({movie:id})    //查找与movieid匹配的movie的对象，先找到与movieid相同的Comment
-		  .populate('from','name')   //在user中查找与form相同的name，然后在筛选与from相同的userid fromid就是指userid
+		  .populate('from','name')   //在user中查找与form相同的name，然后在筛选与from相同的userid fromid就是指userid 并将其中的对象和id转为from
 		  .populate('reply.from','name')
 		  .populate('reply.to','name')
 		  .exec(function(err,comments){     //将符合条件的comments插入
@@ -70,7 +70,7 @@ exports.save=function (req,res) {        //录入电影数据
             if (err){
                 console.log(err)
             }
-            _movie=_.extend(movie,movieObj);
+            _movie=_.extend(movie,movieObj);       //复制movieObj对象中的所有属性覆盖到movie对象上，并且返回 movie 对象. 
             _movie.save(function (err, movie) {
                 if(err){
                     console.log(err)
