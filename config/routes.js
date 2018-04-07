@@ -38,7 +38,7 @@ app.get('/admin/movie/new',User.signinRequired,User.adminRequired,Movie.new)   /
 // admin update movie
 app.get('/admin/movie/update/:id',User.signinRequired,User.adminRequired,Movie.update)
    // admin post movie
-app.post('/admin/movie',User.signinRequired,User.adminRequired,Movie.save);
+app.post('/admin/movie',User.signinRequired,User.adminRequired,Movie.savePoster,Movie.save);
 
 app.get('/admin/movie/list',User.signinRequired,User.adminRequired,Movie.list)
 //list delete
@@ -50,7 +50,10 @@ app.get('/admin/categery/new',User.signinRequired,User.adminRequired,Categery.ne
 
 app.post('/admin/categery',User.signinRequired,User.adminRequired,Categery.save);
 
-app.get('/admin/categery/list',User.signinRequired,User.adminRequired,Categery.list)
+app.get('/admin/categery/list',User.signinRequired,User.adminRequired,Categery.list);
+
+//results 分页
+app.get('/results',Index.search)
 
 }
 

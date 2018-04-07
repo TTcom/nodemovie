@@ -2,7 +2,18 @@
   .row
    .page-header
      h1 #{title}
-      small 重读科幻迷
+       small 重读科幻迷
+        div(style="float:right")
+          a(href="/",style="font-size:16px;padding:0 10px") 首页
+          a(href="/admin/movie/new",style="font-size:16px;padding:0 10px") 电影录入
+          a(href="/admin/movie/list",style="font-size:16px;padding:0 10px") 电影列表
+          a(href="/admin/user/list",style="font-size:16px;padding:0 10px") 用户列表   
+   div(style="padding-bottom:50px;")
+     form(method="GET", action="/results")
+       .input-group.col-sm-6.pull-right
+         input.form-control(type='text',name='q')
+         span.input-group-btn
+           button.btn.btn-default(type="submit") 搜索            
 .navbar.navbar-default.navbar-fixed-bottom
   .container
     .navbar-header

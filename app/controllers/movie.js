@@ -2,7 +2,10 @@
 
 var Movie=require('../models/movie')
 var Comment=require('../models/comment')
+var Categery=require('../models/categery')
 var _=require('underscore')   //Underscore 是一个 JavaScript 工具库，它提供了一整套函数式编程的实用功能
+var fs=require('fs');
+var path=require('path')
 
 //detail page
 exports.detail=function(req,res){      //更新电影	
@@ -27,44 +30,73 @@ exports.detail=function(req,res){      //更新电影
 }
 
 //adimin new
-exports.new=function(req,res){      
+exports.new=function(req,res){     
+	
+	Categery.find({},function(err,categeries){
+		
+	
 	
 	res.render('admin',{
 		title:"movie 后台录入页",
-		movie:{
-			title:'',
-			doctor:'',
-			country:'',
-			year:'',
-			poster:'',
-			flash:'',
-			summary:'',
-			language:''
-		}
+		categeries:categeries,
+		movie:{}
+	  })
 	})
-	
 }
 
 // admin update movie
 exports.update=function(req,res){       //修改电影
 	var id=req.params.id
 	if(id){
+		
 		Movie.findById(id,function(err,movie){
+		Categery.find({},function(err,categeries){
 			res.render('admin',{
 				title:'movie 后台更新页',
-				movie:movie
+				movie:movie,
+				categeries:categeries
 			})
 		})
+	  })
 	}
 };
+//savePoster
+exports.savePoster=function (req,res,next) {        
+	
+	var posterData=req.files.uploadPoster;
+	var filepath=posterData.path;
+	var originalFilename=posterData.originalFilename;
 
+	if(originalFilename){
+		fs.readFile(filepath,function(err,data){
+			
+		 var timestamp=Date.now();
+		 var type=posterData.type.split('/')[1];
+		 var poster=timestamp +'.'+ type;
+		 var newPath=path.join(__dirname, '../../', '/public/upload/' +poster)
+		 
+		 fs.writeFile(newPath,data,function(err){
+		 	req.poster=poster;
+		 	next();
+		 })
+			
+		})
+	}else{
+		next()
+		}
+	
+}
    // admin post movie
 exports.save=function (req,res) {        //录入电影数据
     console.log(req.body);
     var id = req.body.movie._id;
     var movieObj =req.body.movie;
     var _movie;
-    if(id !='undefined'){
+    
+    if(req.poster){
+    	movieObj.poster=req.poster
+    }
+    if(id){
    
         Movie.findById(id,function (err, movie) {
             if (err){
@@ -79,23 +111,36 @@ exports.save=function (req,res) {        //录入电影数据
             })
         })
     }else {
-        _movie=new Movie({
-            doctor:movieObj.doctor,
-            title:movieObj.title,
-            country:movieObj.country,
-            lan:movieObj.lan,
-            year:movieObj.year,
-            poster:movieObj.poster,
-            summary:movieObj.summary,
-            flash:movieObj.flash
-        });
+        _movie=new Movie(movieObj);
+        var categeryId=_movie.categery;
+        var categeryName=movieObj.categeryName;
+
         _movie.save(function (err, movie) {
             if(err){
                 console.log(err)
-            }else{
-            	
             }
-            res.redirect('/movie/'+movie._id);
+           if(categeryId) {
+            Categery.findById(categeryId,function(err,categery){
+            	categery.movies.push(movie._id)
+            	categery.save(function(err,categery){
+            		res.redirect('/movie/'+movie._id);
+            	})
+            })
+            
+           }else if(categeryName){
+           	 var categery=new Categery({
+           	 	name:categeryName,
+           	 	movies:[movie._id]
+           	 })
+           	 categery.save(function(err,categery){   //存入分类
+           	 	   movie.categery=categery._id;
+           	 	   
+           	 	   movie.save(function(err,movie){   //存入电影
+           	 	   	res.redirect('/movie/'+movie._id);
+           	 	   })
+            		
+            	})
+           }
         })
     }
 };

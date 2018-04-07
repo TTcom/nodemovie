@@ -13,11 +13,13 @@ var mongoose=require('mongoose')
 var mongoStore=require('connect-mongo')(session)
 var logger = require('morgan');   //express4.0后logger脱离express由 Morgan替代它是一个node.js关于http请求的日志中间件
 var dburl='mongodb://127.0.0.1:27017/test';
+var mutipart=require('connect-multiparty');
 mongoose.connect(dburl);
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json({limit: '1mb'}));
 //app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname,'public')))
+app.use(mutipart());
 app.use(cookieParser())
 app.use(session({
 
