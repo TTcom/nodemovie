@@ -11,6 +11,10 @@ var movieschema= new Schema({
 	flash:String,
 	poster:String,
 	year:Number,
+	pv:{
+		type:Number,
+		default:0
+	},	
 	categery:{
 		type:ObjectId,
 		 ref:"Categery"

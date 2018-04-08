@@ -10,7 +10,14 @@ var path=require('path')
 //detail page
 exports.detail=function(req,res){      //更新电影	
 	
-	var id= req.params.id                        
+	var id= req.params.id    
+	Movie.update({_id:id},{$inc:{pv:1}},function(err){
+		if(err){
+			console.log(err)
+		}
+		
+		
+	});
 	Movie.findById(id,function(err,movie){        //根据id获取电影数据
 		Comment
 		  .find({movie:id})    //查找与movieid匹配的movie的对象，先找到与movieid相同的Comment
@@ -102,7 +109,10 @@ exports.save=function (req,res) {        //录入电影数据
             if (err){
                 console.log(err)
             }
-            _movie=_.extend(movie,movieObj);       //复制movieObj对象中的所有属性覆盖到movie对象上，并且返回 movie 对象. 
+//            console.log(movieObj.categeryName)
+//            console.log(movieObj.categery)
+            _movie=_.extend(movie,movieObj);       //复制movieObj对象中的所有属性覆盖到movie对象上，并且返回 movie 对象.
+            
             _movie.save(function (err, movie) {
                 if(err){
                     console.log(err)
@@ -114,7 +124,7 @@ exports.save=function (req,res) {        //录入电影数据
         _movie=new Movie(movieObj);
         var categeryId=_movie.categery;
         var categeryName=movieObj.categeryName;
-
+      
         _movie.save(function (err, movie) {
             if(err){
                 console.log(err)
@@ -123,6 +133,8 @@ exports.save=function (req,res) {        //录入电影数据
             Categery.findById(categeryId,function(err,categery){
             	categery.movies.push(movie._id)
             	categery.save(function(err,categery){
+            		
+            		
             		res.redirect('/movie/'+movie._id);
             	})
             })
@@ -133,7 +145,8 @@ exports.save=function (req,res) {        //录入电影数据
            	 	movies:[movie._id]
            	 })
            	 categery.save(function(err,categery){   //存入分类
-           	 	   movie.categery=categery._id;
+          	 	   movie.categery=categery._id;
+ //          	 	   movie.categeryname=categery.name;
            	 	   
            	 	   movie.save(function(err,movie){   //存入电影
            	 	   	res.redirect('/movie/'+movie._id);
