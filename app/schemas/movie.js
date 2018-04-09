@@ -19,6 +19,11 @@ var movieschema= new Schema({
 		type:ObjectId,
 		 ref:"Categery"
 	},
+	categeryname:{
+			type:String,
+			ref:"Categery"
+		
+	},
 	meta:{
 		createAt:{        //创建时间
 			type:Date,

@@ -41,8 +41,6 @@ exports.new=function(req,res){
 	
 	Categery.find({},function(err,categeries){
 		
-	
-	
 	res.render('admin',{
 		title:"movie 后台录入页",
 		categeries:categeries,
@@ -109,19 +107,56 @@ exports.save=function (req,res) {        //录入电影数据
             if (err){
                 console.log(err)
             }
-//            console.log(movieObj.categeryName)
-//            console.log(movieObj.categery)
             _movie=_.extend(movie,movieObj);       //复制movieObj对象中的所有属性覆盖到movie对象上，并且返回 movie 对象.
-            
-            _movie.save(function (err, movie) {
-                if(err){
-                    console.log(err)
-                }
-                res.redirect('/movie/'+movie._id);
-            })
+           
+             var categeryId=_movie.categery;
+              var namer=_movie.categeryname;
+		Categery
+		    .find({name:namer})
+		    .exec(function(err,categeries){
+              	console.log(categeries);console.log(categeries[0]._id)
+              	var ttid=categeries[0]._id;
+              	if(categeries._id!=_movie.categery){
+              		 Categery.update({_id:categeries[0]._id},{$pull:{"movies":_movie._id}},function (err, categery) { //更新删除数组中的某条数据
+              		 	
+              		 	if(err){
+              		 		console.log(err);
+              		 	}
+			            Categery.findById(categeryId,function(err,categery){
+			               	
+			            	   categery.movies.push(_movie._id)
+			            	    	categery.save(function(err,categery){
+				          _movie.categeryname=categery.name;
+			            	
+				             _movie.save(function (err, movie) {
+				                if(err){
+				                    console.log(err)
+				                }
+				                res.redirect('/movie/'+movie._id);
+				            })
+              		   });
+              		 })
+              		 }) 
+              	}else{
+              		
+		             _movie.save(function (err, movie) {
+		                if(err){
+		                    console.log(err)
+		                }
+		                res.redirect('/movie/'+movie._id);
+		            })
+		              		
+              		
+              	}
+                
+                	
+                	
+              })
         })
     }else {
+
         _movie=new Movie(movieObj);
+        
         var categeryId=_movie.categery;
         var categeryName=movieObj.categeryName;
       
@@ -129,16 +164,21 @@ exports.save=function (req,res) {        //录入电影数据
             if(err){
                 console.log(err)
             }
+   
            if(categeryId) {
+           	
             Categery.findById(categeryId,function(err,categery){
             	categery.movies.push(movie._id)
             	categery.save(function(err,categery){
-            		
-            		
-            		res.redirect('/movie/'+movie._id);
+           	 	   movie.categeryname=categery.name;
+           	 	  
+           	 	   movie.save(function(err,movie){   //存入电影
+           	 	   	res.redirect('/movie/'+movie._id);
+           	 	   })
             	})
             })
             
+           
            }else if(categeryName){
            	 var categery=new Categery({
            	 	name:categeryName,
@@ -146,7 +186,7 @@ exports.save=function (req,res) {        //录入电影数据
            	 })
            	 categery.save(function(err,categery){   //存入分类
           	 	   movie.categery=categery._id;
- //          	 	   movie.categeryname=categery.name;
+           	 	   movie.categeryname=categery.name;
            	 	   
            	 	   movie.save(function(err,movie){   //存入电影
            	 	   	res.redirect('/movie/'+movie._id);

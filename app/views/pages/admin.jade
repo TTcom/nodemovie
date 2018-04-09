@@ -9,10 +9,13 @@ block content
             label.col-sm-2.control-label(for="inputid") 电影id
             .col-sm-10
               input#inputid.form-control(type="text") 
-        .form-group
-            label.col-sm-2.control-label(for="inputCategery") 电影分类
-            .col-sm-10
-              input#inputCategery.form-control(type="text",name="movie[categeryName]",value=movie.categeryName)                        
+        if !movie._id      
+          .form-group
+              label.col-sm-2.control-label(for="inputCategery") 电影分类
+              .col-sm-10
+                input#inputCategery.form-control(type="text",name="movie[categeryName]",value=movie.categeryName)  
+        else
+                input(type="hidden",name="movie[categeryName]",value=movie.categeryName)                           
         .form-group
           label.col-sm-2.control-label 分类选择
           each cat in categeries    

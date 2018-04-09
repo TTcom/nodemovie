@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-  .container
+  .container(style="margin-bottom:80px;")
     .row
       table.table.table-hover.table-bordered
         tr
@@ -17,7 +17,7 @@ block content
           th 删除
            each item in movies
              tr(class="item-id-#{item._id}")
-               td #{item.categery.name}
+               td #{item.categeryname}
                td #{item.title}
                td #{item.doctor}
                td #{item.country}
